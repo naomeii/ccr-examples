@@ -8,44 +8,52 @@ In this tutorial, we demonstrate how to locate containers with the software we w
 
 ## Running Containers on CCR's GPU Nodes
 1. Request access to a compute node:
+
 ``
-salloc --partition=general-compute --qos=general-compute --mem=64G --time=12:00:00 --gpus-per-node=1
+$ salloc --partition=general-compute --qos=general-compute --mem=64G --time=12:00:00 --gpus-per-node=1 --no-shell
 ``
+
 **NOTE**: GPU nodes can be in high demand.  To reduce your wait times, we recommend you reduce the time in this example to 2 hours, unless you plan to use the node for additional testing.  Other alternatives to speed up this process: utilize the debug partition (this has a time limit of 1 hour) and/or increase the number of CPUs requested as Apptainer will make use of more cores.
+
 ``--partition=debug --qos=debug --time=1:00:00
 --ntasks-per-node=8``  (or 10)
 
-2. Once on the compute node, we'll set the Apptainer cache directory to our job's scratch directory and pull down a Pytorch container from NVIDIA:
-- Pulling a container from NVIDIA notes: we need to be careful with getting containers from NVIDIA, 
-if you go over to the Tags section, the suggested URI's architecture must match the node, `arm64`containers must use the `arm64` partition
+Once the requested node is available, use the `srun` command to login to the compute node:
 
-the `general-compute` partition allows only `AMD64`
+```
+CCRusername@login1:~$ srun --jobid=22150445 --export=HOME,TERM,SHELL --pty /bin/bash --login
+CCRusername@cpn-d01-06:~$
+```
 
-- Before pulling: set the Apptainer cache directory
+2. Set the Apptainer cache directory to your job's scratch directory
+
 ``
 export APPTAINER_CACHEDIR=$SLURMTMPDIR
 ``
 
 **NOTE**: Downloading and building the container will push you over quota in your home directory, so set the cache directory to your job's Slurm temporary directory (`$SLURMTMPDIR`), which is `/scratch/$JOBID` on the compute node, may result in faster container downloads.  It is also automatically deleted when your job ends.  If your research group is using the same container for multiple builds, you'll want to use your shared project directory for the `APPTAINER_CACHE` location instead. 
 
-- Paste the URI and pull the container as normal, this process could take a while
+3. Pull the specified Pytorch container from NVIDIA:
+
+Use the apptainer pull command, specifying the target container file to be `pytorch.sif` and and the source location where NVIDIA hosts its containers (in this example, we use `docker://nvcr.io/nvidia/pytorch:25.01-py3`).
+
 ``
-apptainer pull pytorch.sif docker:[URI obtained from NVIDIA, example: /nvcr.io/nvidia/pytorch:25.01-py3]
+apptainer pull pytorch.sif docker://nvcr.io/nvidia/pytorch:25.01-py3
 ``
 
-3. Once the download completes, we can test running a simple script with our container
+3. Run script in container
+
+Once the download completes, we can test running a simple script with our container.
+In this example, we are using `gpu_test.py`, a Python script that prints the version of Python and the name of the available GPU.
+
 ``
 apptainer exec --nv pytorch.sif python gpu_test.py
 ``
-the output should show that we are using a more current version of python than the 3.9 available on the cluster
-2nd param: pytorch can detect A100 gpu in our session
-``
 
-``
-you may find that
-NGC does not offer containers that suit all of your computing needs, in these cases you can bootstrap specific containers or the base CUDA NGC container and build your own. you can find more info about building your own containers in CCR's documentation
+The output should confirm that you’re using a newer version of Python than the default 3.9 available on the cluster, and that PyTorch can detect the A100 GPU.
 
-4. Once the download completes, we can test running nvidia-smi with our container:
+4. Verify GPU access with nvidia-smi in container
+
 ``
 apptainer exec --nv pytorch.sif nvidia-smi
 ``
