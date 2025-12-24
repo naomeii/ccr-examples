@@ -1,0 +1,63 @@
+&HEAD CHID='radiator',TITLE='radiator'
+
+&MESH ID='Grid 01', IJK=15, 15, 15, XB=0, 3, 0, 3, 0, 3/
+&MESH ID='Grid 02', IJK=6, 30, 15, XB=3, 3.6, 0, 3, 0, 3/
+&MESH ID='Grid 03', IJK=5, 60, 30, XB=4, 3.6, 0, 3, 0, 3/
+
+&SURF ID= 'OBST', RGB=175,175,175, DEFAULT=.TRUE./
+
+&TIME T_BEGIN=0.000,  T_END=600, /
+&DUMP NFRAMES=60000./
+
+#&REAC ID = 'propane reaction', 
+	SOOT_YIELD=0.001900, 
+	CO_YIELD=0.00500, 
+	FUEL='PROPANE'/
+
+#### mesh openings
+
+&VENT XB=0,0,0.8,1.6,0,2, SURF_ID='OPEN'/ door
+&VENT XB=4,4,0.6,2.6,1.2,2.4, SURF_ID='OPEN', COLOR= 'SKY BLUE' / window
+
+&OBST XB=4,4,0.6,2.6,1.2,2.4, COLOR= 'SKY BLUE',SURF_ID='glass' /
+&SURF ID='glass', TMP_FRONT= 0. /
+
+&OBST XB=0,0,0.8,1.6,0,2, COLOR= 'BROWN', TRANSPARENCY=0 /
+
+#### obstructions
+
+&OBST XB=1,3,2,3,0.4,0, COLOR= 'MINT' /
+&OBST XB=2.6,3,2,3,0.4,0.6, COLOR= 'MINT' /
+
+&OBST XB=1,2.6,0,1,0.8,0.6, COLOR= 'BRICK' /
+&OBST XB=1,1.2,0,0.2,0.6,0, COLOR= 'BRICK' /
+&OBST XB=1,1.2,1,0.8,0.6,0, COLOR= 'BRICK' /
+&OBST XB=2.6,2.4,0,0.2,0.6,0, COLOR= 'BRICK' /
+&OBST XB=2.6,2.4,0.8,1,0.6,0, COLOR= 'BRICK' /
+
+## radiator
+
+&OBST XB=3.8, 4,   1.0,   1.05,      0.2,1, COLOR= 'WHITE', SURF_ID='radiator' /
+&OBST XB=3.8, 4,   1.1,   1.15,      0.2,1, COLOR= 'WHITE', SURF_ID='radiator' /
+&OBST XB=3.8, 4,   1.2,   1.25,      0.2,1, COLOR= 'WHITE', SURF_ID='radiator' /
+&OBST XB=3.8, 4,   1.3,   1.35,      0.2,1, COLOR= 'WHITE', SURF_ID='radiator' /
+&OBST XB=3.8, 4,   1.4,   1.45,      0.2,1, COLOR= 'WHITE', SURF_ID='radiator' /
+&OBST XB=3.8, 4,   1.5,   1.55,      0.2,1, COLOR= 'WHITE', SURF_ID='radiator' /
+&OBST XB=3.8, 4,   1.6,   1.65,      0.2,1, COLOR= 'WHITE', SURF_ID='radiator' /
+&OBST XB=3.8, 4,   1.7,   1.75,      0.2,1, COLOR= 'WHITE', SURF_ID='radiator' /
+&OBST XB=3.8, 4,   1.8,   1.85,      0.2,1, COLOR= 'WHITE', SURF_ID='radiator' /
+&OBST XB=3.8, 4,   1.9,   1.95,      0.2,1, COLOR= 'WHITE', SURF_ID='radiator' /
+
+&SURF ID='radiator', TMP_FRONT=70. /
+
+#### output
+
+#slice
+
+&SLCF PBX = 3.9,  QUANTITY='TEMPERATURE'/
+&SLCF PBY = 1.6,  QUANTITY='TEMPERATURE'/
+
+&SLCF PBX = 3.9, QUANTITY='VELOCITY', VECTOR=.TRUE./
+&SLCF PBY = 1.6, QUANTITY='VELOCITY', VECTOR=.TRUE./
+
+&TAIL  /
