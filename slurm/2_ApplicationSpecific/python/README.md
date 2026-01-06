@@ -25,7 +25,7 @@ For tasks that are embarassingly parallel or those using NumPy arrays, `joblib` 
 The following line in our example script shows how to apply the function to compute fibonacci numbers across an array of input values:
 ```results = Parallel(n_jobs=8)(delayed(fib)(n) for n in my_values)```
 
-In this case, we are applying the `fib` function to each value `n` in our `my_values` list. These computations will run in parallel across 8 total processes, specified by the `njobs` parameter for the parallel computation. Please note, in order to see runtime improvements across processes, you will need to make sure to request as many CPUs for your job as the number of processes you want to run. These can be requested using the slurm `ntasks_per_node` or `cpus_per_task` options, where `njobs = ntasks_per_node * cpus_per_task`.
+In this case, we are applying the `fib` function to each value `n` in our `my_values` list. These computations will run in parallel across 8 total processes, specified by the `n_jobs` parameter for the parallel computation. Please note, in order to see runtime improvements across processes, you will need to make sure to request as many CPUs for your job as the number of processes you want to run. These can be requested using the slurm `ntasks_per_node` or `cpus_per_task` options, where `n_jobs = ntasks_per_node * cpus_per_task`.
 
 Our example slurm script only uses 8 CPUs, so you will not see any performance improvement as `n_jobs` increases beyond 8. Furthermore, increasing the amount of processes running in parallel may not improve runtime in all cases, as there is overhead to managing each additional process.
 
