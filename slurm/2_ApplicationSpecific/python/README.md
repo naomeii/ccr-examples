@@ -13,7 +13,7 @@ To run the Python script, simply submit the job to the scheduler from a login no
 sbatch python-sp.bash
 ```
 
-## Parallel Python Tutorial
+## Parallel Python Tutorial ([parallel/](./parallel))
 Parallel processing is a technique that executes multiple tasks at the same time using multiple CPU cores. This directory includes examples of two ways to perform parallel processing in Python.
 
 ## Multiprocessing
