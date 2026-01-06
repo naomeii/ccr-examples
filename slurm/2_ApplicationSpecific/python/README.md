@@ -19,7 +19,7 @@ Parallel processing is a technique that executes multiple tasks at the same time
 ## Multiprocessing
 There are numerous APIs available to run python code in parallel, each with their strengths and weaknesses. A common API for parallel python processing is called `multiprocessing`. This library is powerful, enabling things like interprocess communication. However, for this simple demo we will use some basic functionality.
 
-## Joblib ([fibonacci_joblib.py](./fibonacci_joblib.py))
+## Joblib ([fibonacci_joblib.py](./parallel/fibonacci_joblib.py))
 For tasks that are embarassingly parallel or those using NumPy arrays, `joblib` can be a more efficient and convenient solution. Since our `multiprocessing` example above involves computing fibonacci numbers in separate processes without any dependencies across processes, this computation is considered **embarassingly parallel**.  Thus, we can use `joblib` to compute Fibonacci numbers in parallel.
 
 The following line in our example script shows how to apply the function to compute fibonacci numbers across an array of input values:
