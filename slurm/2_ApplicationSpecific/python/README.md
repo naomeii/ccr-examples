@@ -20,15 +20,26 @@ Parallel processing is a technique that executes multiple tasks at the same time
 There are numerous APIs available to run python code in parallel, each with their strengths and weaknesses. A common API for parallel python processing is called `multiprocessing`. This library is powerful, enabling things like interprocess communication. However, for this simple demo we will use some basic functionality.
 
 ## Joblib ([fibonacci_joblib.py](./parallel/fibonacci_joblib.py))
-For tasks that are embarassingly parallel or those using NumPy arrays, `joblib` can be a more efficient and convenient solution. Since our `multiprocessing` example above involves computing fibonacci numbers in separate processes without any dependencies across processes, this computation is considered **embarassingly parallel**.  Thus, we can use `joblib` to compute Fibonacci numbers in parallel.
+For tasks that are embarassingly parallel or those using NumPy arrays, `joblib` can be a more efficient and convenient solution. Since our `multiprocessing` example above involves computing fibonacci numbers in separate processes without any dependencies across processes, this computation is considered **embarassingly parallel**. Thus, we can use `joblib` to compute Fibonacci numbers in parallel.
 
 The following line in our example script shows how to apply the function to compute fibonacci numbers across an array of input values:
 ```results = Parallel(n_jobs=8)(delayed(fib)(n) for n in my_values)```
 
-In this case, we are applying the `fib` function to each value `n` in our `my_values` list. These computations will run in parallel across 8 total processes, specified by the `n_jobs` parameter for the parallel computation. Please note, in order to see runtime improvements across processes, you will need to make sure to request as many CPUs for your job as the number of processes you want to run. These can be requested using the slurm `ntasks_per_node` or `cpus_per_task` options, where `n_jobs = ntasks_per_node * cpus_per_task`.
+In this case, we are applying the `fib` function to each value `n` in our `my_values` list. 
+
+`n_jobs=8` creates 8 independent Python tasks where each task performs the computation in parallel. 
+
+> [!NOTE]
+> Please note, in order to see runtime improvements across processes, you will need to make sure to request as many CPUs for your Slurm job as the number of processes you want to run.
+> The request can be made using the slurm `ntasks_per_node` or `cpus_per_task` options, where `n_jobs = ntasks_per_node * cpus_per_task`.
+> 
+> The `cpus_per_task` option specifies the number of CPU cores available to each task which can be used by threads inside the process for memory if your code is multithreaded. The `ntasks_per_node` option specifies the number of tasks placed on each node.
+> 
+> For example, if you request `ntasks_per_node=2` and `cpus-per-task=4`, you have `2 * 4 = 8` CPUs that can run tasks (or threads inside tasks) at the same time.
 
 Our example slurm script only uses 8 CPUs, so you will not see any performance improvement as `n_jobs` increases beyond 8. Furthermore, increasing the amount of processes running in parallel may not improve runtime in all cases, as there is overhead to managing each additional process.
 
 For a more in depth discussion on `joblib`, please refer to its [documentation](https://joblib.readthedocs.io/en/stable/).
 
-In line 23 of this example, `n_jobs` or the number of parallel processes, should match the number of CPUs or tasks you request in order to see any runtime improvements.
+> [!TIP]
+> In line 23 of this example, `n_jobs` or the number of parallel processes, should match the number of CPUs or tasks you request in order to see any runtime improvements.
